@@ -89,7 +89,7 @@ impl eframe::App for TemplateApp {
                 {
                     self.window_settings = true;
                 }
-                ui.add(egui::Label::new("ignore it..."));
+                ui.add(egui::Label::new("Search..."));
             });
         });
 
@@ -105,6 +105,7 @@ impl eframe::App for TemplateApp {
             .open(&mut self.window_about)
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
+				if ctx.style().visuals.dark_mode {
                     ui.add(egui::Image::new(
                         egui_extras::RetainedImage::from_image_bytes(
                             "images/zephyrostrans.png",
@@ -114,6 +115,17 @@ impl eframe::App for TemplateApp {
                         .texture_id(ctx),
                         [320.0, 320.0],
                     ));
+				} else {
+					ui.add(egui::Image::new(
+                        egui_extras::RetainedImage::from_image_bytes(
+                            "images/zephyrostransdark.png",
+                            include_bytes!("images/zephyrostransdark.png"),
+                        )
+                        .unwrap()
+                        .texture_id(ctx),
+                        [320.0, 320.0],
+                    ));
+				}
                     ui.label(
                         egui::RichText::new("ZephyrOS 1.0").font(egui::FontId::proportional(32.0)),
                     );
