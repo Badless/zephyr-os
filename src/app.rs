@@ -22,9 +22,11 @@ impl Default for TemplateApp {
             window_about: true,
             window_settings: false,
             notify: Toasts::default(),
-            wallpaper: egui_extras::RetainedImage::from_image_bytes("images/WebStorm.jpg", 
-            include_bytes!("images/WebStorm.jpg"))
-                .unwrap(),
+            wallpaper: egui_extras::RetainedImage::from_image_bytes(
+                "images/WebStorm.jpg", 
+                include_bytes!("images/WebStorm.jpg"),
+            )
+            .unwrap(),
         }
     }
 }
