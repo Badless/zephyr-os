@@ -74,15 +74,18 @@ impl eframe::App for TemplateApp {
 
         egui::TopBottomPanel::bottom("bottom-bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                if ui.add(
-                    egui::ImageButton::new(
+                if ui
+                    .add(egui::ImageButton::new(
                         egui_extras::RetainedImage::from_image_bytes(
                             "images/zephyrosbar.png", 
-                include_bytes!("images/zephyrosbar.png"))
-                        .unwrap()
-                        .texture_id(ctx),
-                        [32.0, 32.0]
-                )).clicked() {
+                            include_bytes!("images/zephyrosbar.png"),
+                            )
+                            .unwrap()
+                            .texture_id(ctx),
+                            [32.0, 32.0],
+                ))
+                .clicked()
+                {
                     self.window_settings = true;
                 }
                 ui.add(egui::Label::new("ignore it..."));
@@ -93,7 +96,7 @@ impl eframe::App for TemplateApp {
             // The central panel the region left after adding TopPanel's and SidePanel's
             ui.add(egui::Image::new(
                 self.wallpaper.texture_id(ctx),
-                [ui.available_width(), ui.available_height()]
+                [ui.available_width(), ui.available_height()],
             ));
         });
 
@@ -104,18 +107,23 @@ impl eframe::App for TemplateApp {
                     ui.add(egui::Image::new(
                         egui_extras::RetainedImage::from_image_bytes(
                             "images/zephyrostrans.png", 
-                        include_bytes!("images/zephyrostrans.png"))
+                            include_bytes!("images/zephyrostrans.png"),
+                        )
                         .unwrap()
                         .texture_id(ctx),
-                        [320.0, 320.0]
+                        [320.0, 320.0],
                     ));
-                    ui.label(egui::RichText::new("ZephyrOS 1.0")
-                        .font(egui::FontId::proportional(32.0)));
-                    ui.label(egui::RichText::new(
-                        "Zephyr OS is a slick and feature packed OS
+                    ui.label(
+                        egui::RichText::new("ZephyrOS 1.0").font(egui::FontId::proportional(32.0)),
+                    );
+                    ui.label(
+                        egui::RichText::new(
+                            "Zephyr OS is a slick and feature packed OS
                         which is written in rust (compiled to WASM)
                         Includes a fully working package manager called Zinc"
-                    ).font(egui::FontId::proportional(20.0)));
+                        )
+                        .font(egui::FontId::proportional(20.0)),
+                    );
                 });
             });
 
