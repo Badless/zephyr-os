@@ -23,7 +23,7 @@ impl Default for TemplateApp {
             window_settings: false,
             notify: Toasts::default(),
             wallpaper: egui_extras::RetainedImage::from_image_bytes(
-                "images/WebStorm.jpg", 
+                "images/WebStorm.jpg",
                 include_bytes!("images/WebStorm.jpg"),
             )
             .unwrap(),
@@ -56,7 +56,6 @@ impl eframe::App for TemplateApp {
     /// Called each time the UI needs repainting, which may be many times per second.
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-
         // Examples of how to create different panels and windows.
         // Pick whichever suits you.
         // Tip: a good default choice is to just keep the `CentralPanel`.
@@ -79,14 +78,14 @@ impl eframe::App for TemplateApp {
                 if ui
                     .add(egui::ImageButton::new(
                         egui_extras::RetainedImage::from_image_bytes(
-                            "images/zephyrosbar.png", 
+                            "images/zephyrosbar.png",
                             include_bytes!("images/zephyrosbar.png"),
-                            )
-                            .unwrap()
-                            .texture_id(ctx),
-                            [32.0, 32.0],
-                ))
-                .clicked()
+                        )
+                        .unwrap()
+                        .texture_id(ctx),
+                        [32.0, 32.0],
+                    ))
+                    .clicked()
                 {
                     self.window_settings = true;
                 }
@@ -108,7 +107,7 @@ impl eframe::App for TemplateApp {
                 ui.vertical_centered(|ui| {
                     ui.add(egui::Image::new(
                         egui_extras::RetainedImage::from_image_bytes(
-                            "images/zephyrostrans.png", 
+                            "images/zephyrostrans.png",
                             include_bytes!("images/zephyrostrans.png"),
                         )
                         .unwrap()
@@ -122,7 +121,7 @@ impl eframe::App for TemplateApp {
                         egui::RichText::new(
                             "Zephyr OS is a slick and feature packed OS
                         which is written in rust (compiled to WASM)
-                        Includes a fully working package manager called Zinc"
+                        Includes a fully working package manager called Zinc",
                         )
                         .font(egui::FontId::proportional(20.0)),
                     );
@@ -134,7 +133,7 @@ impl eframe::App for TemplateApp {
             .show(ctx, |ui| {
                 ctx.style_ui(ui);
             });
-        
+
         self.notify.show(ctx);
     }
 }
