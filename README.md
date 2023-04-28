@@ -9,7 +9,7 @@ If you don't want to download any files you can go to this website and try it [h
 <details>
 <summary>(28.04.2023)</summary>
 <br>
-Project Started
+Project Started<br>
 [+] About Window<br>
 [+] Settings<br>
 [+] Wallpaper<br>
