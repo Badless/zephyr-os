@@ -54,12 +54,6 @@ impl eframe::App for TemplateApp {
     /// Called each time the UI needs repainting, which may be many times per second.
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let Self {
-            window_about,
-            window_settings,
-            notify,
-            wallpaper,
-        } = self;
 
         // Examples of how to create different panels and windows.
         // Pick whichever suits you.
@@ -98,13 +92,13 @@ impl eframe::App for TemplateApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             // The central panel the region left after adding TopPanel's and SidePanel's
             ui.add(egui::Image::new(
-                wallpaper.texture_id(ctx),
+                self.wallpaper.texture_id(ctx),
                 [ui.available_width(), ui.available_height()]
             ));
         });
 
         egui::Window::new("About")
-            .open(window_about)
+            .open(&mut self.window_about)
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
                     ui.add(egui::Image::new(
@@ -131,6 +125,6 @@ impl eframe::App for TemplateApp {
                 ctx.style_ui(ui);
             });
         
-        notify.show(ctx);
+        self.notify.show(ctx);
     }
 }
