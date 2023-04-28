@@ -1,21 +1,30 @@
+use egui_notify::Toasts;
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TemplateApp {
     // Example stuff:
-    label: String,
+    window_about: bool,
+    window_settings: bool,
 
     // this how you opt-out of serialization of a member
     #[serde(skip)]
-    value: f32,
+    notify: Toasts,
+    #[serde(skip)]
+    wallpaper: egui_extras::RetainedImage,
 }
 
 impl Default for TemplateApp {
     fn default() -> Self {
         Self {
             // Example stuff:
-            label: "Hello World!".to_owned(),
-            value: 2.7,
+            window_about: true,
+            window_settings: false,
+            notify: Toasts::default(),
+            wallpaper: egui_extras::RetainedImage::from_image_bytes("images/WebStorm.jpg", 
+            include_bytes!("images/WebStorm.jpg"))
+                .unwrap(),
         }
     }
 }
@@ -45,7 +54,12 @@ impl eframe::App for TemplateApp {
     /// Called each time the UI needs repainting, which may be many times per second.
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let Self { label, value } = self;
+        let Self {
+            window_about,
+            window_settings,
+            notify,
+            wallpaper,
+        } = self;
 
         // Examples of how to create different panels and windows.
         // Pick whichever suits you.
@@ -64,53 +78,59 @@ impl eframe::App for TemplateApp {
             });
         });
 
-        egui::SidePanel::left("side_panel").show(ctx, |ui| {
-            ui.heading("Side Panel");
-
+        egui::TopBottomPanel::bottom("bottom-bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ui.label("Write something: ");
-                ui.text_edit_singleline(label);
-            });
-
-            ui.add(egui::Slider::new(value, 0.0..=10.0).text("value"));
-            if ui.button("Increment").clicked() {
-                *value += 1.0;
-            }
-
-            ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                ui.horizontal(|ui| {
-                    ui.spacing_mut().item_spacing.x = 0.0;
-                    ui.label("powered by ");
-                    ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-                    ui.label(" and ");
-                    ui.hyperlink_to(
-                        "eframe",
-                        "https://github.com/emilk/egui/tree/master/crates/eframe",
-                    );
-                    ui.label(".");
-                });
+                if ui.add(
+                    egui::ImageButton::new(
+                        egui_extras::RetainedImage::from_image_bytes(
+                            "images/zephyrosbar.png", 
+                include_bytes!("images/zephyrosbar.png"))
+                        .unwrap()
+                        .texture_id(ctx),
+                        [32.0, 32.0]
+                )).clicked() {
+                    self.window_settings = true;
+                }
+                ui.add(egui::Label::new("ignore it..."));
             });
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
             // The central panel the region left after adding TopPanel's and SidePanel's
-
-            ui.heading("eframe template");
-            ui.hyperlink("https://github.com/emilk/eframe_template");
-            ui.add(egui::github_link_file!(
-                "https://github.com/emilk/eframe_template/blob/master/",
-                "Source code."
+            ui.add(egui::Image::new(
+                wallpaper.texture_id(ctx),
+                [ui.available_width(), ui.available_height()]
             ));
-            egui::warn_if_debug_build(ui);
         });
 
-        if false {
-            egui::Window::new("Window").show(ctx, |ui| {
-                ui.label("Windows can be moved by dragging them.");
-                ui.label("They are automatically sized based on contents.");
-                ui.label("You can turn on resizing and scrolling if you like.");
-                ui.label("You would normally choose either panels OR windows.");
+        egui::Window::new("About")
+            .open(window_about)
+            .show(ctx, |ui| {
+                ui.vertical_centered(|ui| {
+                    ui.add(egui::Image::new(
+                        egui_extras::RetainedImage::from_image_bytes(
+                            "images/zephyrostrans.png", 
+                        include_bytes!("images/zephyrostrans.png"))
+                        .unwrap()
+                        .texture_id(ctx),
+                        [320.0, 320.0]
+                    ));
+                    ui.label(egui::RichText::new("ZephyrOS 1.0")
+                        .font(egui::FontId::proportional(32.0)));
+                    ui.label(egui::RichText::new(
+                        "Zephyr OS is a slick and feature packed OS
+                        which is written in rust (compiled to WASM)
+                        Includes a fully working package manager called Zinc"
+                    ).font(egui::FontId::proportional(20.0)));
+                });
             });
-        }
+
+        egui::Window::new("Settings")
+            .open(&mut self.window_settings)
+            .show(ctx, |ui| {
+                ctx.style_ui(ui);
+            });
+        
+        notify.show(ctx);
     }
 }
