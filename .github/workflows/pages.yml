@@ -37,7 +37,7 @@ jobs:
         # will obviously return error 404 not found.
         run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: DevBadless/github-pages-deploy-action@v4
         with:
           folder: dist
           # this option will not maintain any history of your previous pages deployment
