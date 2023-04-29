@@ -2,6 +2,7 @@ use chrono::Timelike;
 use egui_notify::Toasts;
 
 use crate::widget;
+use crate::window;
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -136,52 +137,8 @@ impl eframe::App for TemplateApp {
         widget::clock(ctx, &mut self.widget_clock);
         widget::menu_start(ctx, &mut self.widget_menu);
 
-        // We also need better window system, if You can please create a file window.rs
-        // and make that will work like widget system. Thanks!
-        egui::Window::new("About")
-            .open(&mut self.window_about)
-            .show(ctx, |ui| {
-                ui.vertical_centered(|ui| {
-                    if ctx.style().visuals.dark_mode {
-                        ui.add(egui::Image::new(
-                            egui_extras::RetainedImage::from_image_bytes(
-                                "images/zephyrostrans.png",
-                                include_bytes!("images/zephyrostrans.png"),
-                            )
-                            .unwrap()
-                            .texture_id(ctx),
-                            [320.0, 320.0],
-                        ));
-                    } else {
-                        ui.add(egui::Image::new(
-                            egui_extras::RetainedImage::from_image_bytes(
-                                "images/zephyrostransdark.png",
-                                include_bytes!("images/zephyrostransdark.png"),
-                            )
-                            .unwrap()
-                            .texture_id(ctx),
-                            [320.0, 320.0],
-                        ));
-                    }
-                    ui.label(
-                        egui::RichText::new("ZephyrOS 1.0").font(egui::FontId::proportional(32.0)),
-                    );
-                    ui.label(
-                        egui::RichText::new(
-                            "Zephyr OS is a slick and feature packed OS
-                        which is written in rust (compiled to WASM)
-                        Includes a fully working package manager called Zinc",
-                        )
-                        .font(egui::FontId::proportional(20.0)),
-                    );
-                });
-            });
-
-        egui::Window::new("Settings")
-            .open(&mut self.window_settings)
-            .show(ctx, |ui| {
-                ctx.style_ui(ui);
-            });
+        window::about(ctx, &mut self.window_about);
+        window::settings(ctx, &mut self.window_settings);
 
         self.notify.show(ctx);
     }

@@ -29,7 +29,6 @@ pub fn clock(ctx: &egui::Context, open: &mut bool) {
                         .clicked()
                     {
                         // Change TemplateApp into LoginScreen.
-                        Box::new(|cc| Box::new(crate::LoginScreen::new(cc)));
                     };
                 });
             });
@@ -49,7 +48,7 @@ pub fn menu_start(ctx: &egui::Context, open: &mut bool) {
                 .button(egui::RichText::new("Welcome").font(egui::FontId::proportional(24.0)))
                 .clicked()
             {
-                // Open about window
+                // make it run about window in app.rs.
             };
         });
 }

@@ -2,7 +2,5 @@
 
 mod app;
 pub use app::TemplateApp;
-mod login_screen;
-pub use login_screen::LoginScreen;
-mod toggle_switch;
 mod widget;
+mod window;
