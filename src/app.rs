@@ -92,7 +92,11 @@ impl eframe::App for TemplateApp {
                     ))
                     .clicked()
                 {
-                    self.window_settings = true;
+                    if widget_settings {
+                        self.widget_settings = false;
+                    } else {
+                        self.widget_settings = true;
+                    }
                 }
                 ui.add(egui::Label::new("Search..."));
 
