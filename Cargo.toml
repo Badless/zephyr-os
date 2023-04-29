@@ -21,6 +21,7 @@ egui_extras = { version = "0.21.0", features = ["image"] }
 egui-notify = "0.6.0"
 chrono = "0.4.24"
 image = "0.24.6"
+egui-modal = "0.2.2"
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

@@ -1,6 +1,8 @@
 use chrono::Timelike;
 use egui_notify::Toasts;
 
+use crate::widget;
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
@@ -8,6 +10,7 @@ pub struct TemplateApp {
     // Example stuff:
     window_about: bool,
     window_settings: bool,
+    widget_clock: bool,
 
     // this how you opt-out of serialization of a member
     #[serde(skip)]
@@ -22,6 +25,7 @@ impl Default for TemplateApp {
             // Example stuff:
             window_about: true,
             window_settings: false,
+            widget_clock: false,
             notify: Toasts::default(),
             wallpaper: egui_extras::RetainedImage::from_image_bytes(
                 "images/WebStorm.jpg",
@@ -94,11 +98,20 @@ impl eframe::App for TemplateApp {
 
                 let clock: f64 = chrono::Local::now().time().num_seconds_from_midnight() as f64;
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    ui.label(format!(
-                        "{:02}:{:02}",
-                        (clock % (24.0 * 60.0 * 60.0) / 3600.0).floor(),
-                        (clock % (60.0 * 60.0) / 60.0).floor(),
-                    ));
+                    if ui
+                        .button(format!(
+                            "{:02}:{:02}",
+                            (clock % (24.0 * 60.0 * 60.0) / 3600.0).floor(),
+                            (clock % (60.0 * 60.0) / 60.0).floor(),
+                        ))
+                        .clicked()
+                    {
+                        if self.widget_clock {
+                            self.widget_clock = false;
+                        } else {
+                            self.widget_clock = true;
+                        }
+                    };
                 });
             });
         });
@@ -111,6 +124,11 @@ impl eframe::App for TemplateApp {
             ));
         });
 
+        // We need better widget system, look at widget.rs.
+        widget::clock(ctx, &mut self.widget_clock);
+
+        // We also need better window system, if You can please create a file window.rs
+        // and make that will work like widget system. Thanks!
         egui::Window::new("About")
             .open(&mut self.window_about)
             .show(ctx, |ui| {

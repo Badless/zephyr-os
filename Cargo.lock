@@ -838,6 +838,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "egui-modal"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f15e5ba88bf7df3aafac7c97f3095d92beb4de9ecf9bc4e2387cfddea6114bde"
+dependencies = [
+ "egui",
+]
+
+[[package]]
 name = "egui-notify"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3121,6 +3130,7 @@ dependencies = [
  "console_error_panic_hook",
  "eframe",
  "egui",
+ "egui-modal",
  "egui-notify",
  "egui_extras",
  "image",
