@@ -1,3 +1,4 @@
+use chrono::Timelike;
 use egui_notify::Toasts;
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
@@ -90,6 +91,15 @@ impl eframe::App for TemplateApp {
                     self.window_settings = true;
                 }
                 ui.add(egui::Label::new("Search..."));
+
+                let clock: f64 = chrono::Local::now().time().num_seconds_from_midnight() as f64;
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    ui.label(format!(
+                        "{:02}:{:02}",
+                        (clock % (24.0 * 60.0 * 60.0) / 3600.0).floor(),
+                        (clock % (60.0 * 60.0) / 60.0).floor(),
+                    ));
+                });
             });
         });
 
@@ -105,27 +115,27 @@ impl eframe::App for TemplateApp {
             .open(&mut self.window_about)
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
-				if ctx.style().visuals.dark_mode {
-                    ui.add(egui::Image::new(
-                        egui_extras::RetainedImage::from_image_bytes(
-                            "images/zephyrostrans.png",
-                            include_bytes!("images/zephyrostrans.png"),
-                        )
-                        .unwrap()
-                        .texture_id(ctx),
-                        [320.0, 320.0],
-                    ));
-				} else {
-					ui.add(egui::Image::new(
-                        egui_extras::RetainedImage::from_image_bytes(
-                            "images/zephyrostransdark.png",
-                            include_bytes!("images/zephyrostransdark.png"),
-                        )
-                        .unwrap()
-                        .texture_id(ctx),
-                        [320.0, 320.0],
-                    ));
-				}
+                    if ctx.style().visuals.dark_mode {
+                        ui.add(egui::Image::new(
+                            egui_extras::RetainedImage::from_image_bytes(
+                                "images/zephyrostrans.png",
+                                include_bytes!("images/zephyrostrans.png"),
+                            )
+                            .unwrap()
+                            .texture_id(ctx),
+                            [320.0, 320.0],
+                        ));
+                    } else {
+                        ui.add(egui::Image::new(
+                            egui_extras::RetainedImage::from_image_bytes(
+                                "images/zephyrostransdark.png",
+                                include_bytes!("images/zephyrostransdark.png"),
+                            )
+                            .unwrap()
+                            .texture_id(ctx),
+                            [320.0, 320.0],
+                        ));
+                    }
                     ui.label(
                         egui::RichText::new("ZephyrOS 1.0").font(egui::FontId::proportional(32.0)),
                     );
