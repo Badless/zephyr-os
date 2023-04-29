@@ -23,6 +23,8 @@ Project Started<br>
 <summary>(29.04.2023)</summary>
 <br>
 [+] Clock<br>
+[+] Widgets<br>
+[+] egui_modal crate for important notifications<br>
 </details>
 
 ## Have an idea for our os?
