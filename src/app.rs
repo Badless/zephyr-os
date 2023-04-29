@@ -9,8 +9,9 @@ use crate::widget;
 pub struct TemplateApp {
     // Example stuff:
     window_about: bool,
-    widget_settings: bool,
+    window_settings: bool,
     widget_clock: bool,
+    widget_menu: bool,
 
     // this how you opt-out of serialization of a member
     #[serde(skip)]
@@ -24,8 +25,9 @@ impl Default for TemplateApp {
         Self {
             // Example stuff:
             window_about: true,
-            widget_settings: false,
+            window_settings: false,
             widget_clock: false,
+            widget_menu: false,
             notify: Toasts::default(),
             wallpaper: egui_extras::RetainedImage::from_image_bytes(
                 "images/WebStorm.jpg",
@@ -92,10 +94,10 @@ impl eframe::App for TemplateApp {
                     ))
                     .clicked()
                 {
-                    if self.widget_settings {
-                        self.widget_settings = false;
+                    if self.widget_menu {
+                        self.widget_menu = false;
                     } else {
-                        self.widget_settings = true;
+                        self.widget_menu = true;
                     }
                 }
                 ui.add(egui::Label::new("Search..."));
@@ -116,6 +118,8 @@ impl eframe::App for TemplateApp {
                             self.widget_clock = true;
                         }
                     };
+
+                    //ui.add(super::toggle_switch::toggle(&mut self.widget_clock));
                 });
             });
         });
@@ -128,8 +132,9 @@ impl eframe::App for TemplateApp {
             ));
         });
 
-        // We need better widget system, look at widget.rs.
+        // We need better widget system, look at widget.rs
         widget::clock(ctx, &mut self.widget_clock);
+        widget::menu_start(ctx, &mut self.widget_menu);
 
         // We also need better window system, if You can please create a file window.rs
         // and make that will work like widget system. Thanks!
@@ -172,7 +177,11 @@ impl eframe::App for TemplateApp {
                 });
             });
 
-        widget::settings(ctx, &mut self.widget_settings);
+        egui::Window::new("Settings")
+            .open(&mut self.window_settings)
+            .show(ctx, |ui| {
+                ctx.style_ui(ui);
+            });
 
         self.notify.show(ctx);
     }
