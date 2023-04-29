@@ -19,6 +19,12 @@ Project Started<br>
 [+] Taskbar<br>
 </details>
 
+<details>
+<summary>(29.04.2023)</summary>
+<br>
+[+] Clock<br>
+</details>
+
 ## Have an idea for our os?
 If you have any idea that you think will be good, then you can post it on our [Discord (coming soon)]().
 
