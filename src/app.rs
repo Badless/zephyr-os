@@ -9,7 +9,7 @@ use crate::widget;
 pub struct TemplateApp {
     // Example stuff:
     window_about: bool,
-    window_settings: bool,
+    widget_settings: bool,
     widget_clock: bool,
 
     // this how you opt-out of serialization of a member
@@ -24,7 +24,7 @@ impl Default for TemplateApp {
         Self {
             // Example stuff:
             window_about: true,
-            window_settings: false,
+            widget_settings: false,
             widget_clock: false,
             notify: Toasts::default(),
             wallpaper: egui_extras::RetainedImage::from_image_bytes(
@@ -168,11 +168,7 @@ impl eframe::App for TemplateApp {
                 });
             });
 
-        egui::Window::new("Settings")
-            .open(&mut self.window_settings)
-            .show(ctx, |ui| {
-                ctx.style_ui(ui);
-            });
+        widget::settings(ctx, &mut self.widget_settings);
 
         self.notify.show(ctx);
     }
