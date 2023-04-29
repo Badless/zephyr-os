@@ -92,7 +92,7 @@ impl eframe::App for TemplateApp {
                     ))
                     .clicked()
                 {
-                    if widget_settings {
+                    if self.widget_settings {
                         self.widget_settings = false;
                     } else {
                         self.widget_settings = true;
