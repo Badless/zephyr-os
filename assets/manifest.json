@@ -1,6 +1,6 @@
 {
-  "name": "egui Template PWA",
-  "short_name": "egui-template-pwa",
+  "name": "Zephyr OS",
+  "short_name": "ZephyrOS",
   "icons": [
     {
       "src": "./icon-256.png",
