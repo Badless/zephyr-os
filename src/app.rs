@@ -11,14 +11,23 @@ pub struct TemplateApp {
     // Example stuff:
     window_about: bool,
     window_settings: bool,
+    window_textedit: bool,
     widget_clock: bool,
     widget_menu: bool,
+    bar_width: f32,
+    bar_x: f32,
+    bar_y: f32,
+    logged_in: bool,
+    nickname: String,
+    text: String,
 
     // this how you opt-out of serialization of a member
     #[serde(skip)]
     notify: Toasts,
     #[serde(skip)]
     wallpaper: egui_extras::RetainedImage,
+    #[serde(skip)]
+    wallpaper_login: egui_extras::RetainedImage,
 }
 
 impl Default for TemplateApp {
@@ -27,12 +36,24 @@ impl Default for TemplateApp {
             // Example stuff:
             window_about: true,
             window_settings: false,
+            window_textedit: false,
             widget_clock: false,
             widget_menu: false,
+            bar_width: 520.0,
+            bar_x: 10.0,
+            bar_y: 0.0,
+            logged_in: false,
+            nickname: "".to_owned(),
+            text: "".to_owned(),
             notify: Toasts::default(),
             wallpaper: egui_extras::RetainedImage::from_image_bytes(
                 "images/WebStorm.jpg",
                 include_bytes!("images/WebStorm.jpg"),
+            )
+            .unwrap(),
+            wallpaper_login: egui_extras::RetainedImage::from_image_bytes(
+                "images/WebStormLogin.png",
+                include_bytes!("images/WebStormLogin.png"),
             )
             .unwrap(),
         }
@@ -81,65 +102,107 @@ impl eframe::App for TemplateApp {
             });
         });
 
-        egui::TopBottomPanel::bottom("bottom-bar").show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                if ui
-                    .add(egui::ImageButton::new(
-                        egui_extras::RetainedImage::from_image_bytes(
-                            "images/zephyrosbar.png",
-                            include_bytes!("images/zephyrosbar.png"),
-                        )
-                        .unwrap()
-                        .texture_id(ctx),
-                        [32.0, 32.0],
-                    ))
-                    .clicked()
-                {
-                    if self.widget_menu {
-                        self.widget_menu = false;
-                    } else {
-                        self.widget_menu = true;
-                    }
-                }
-                ui.add(egui::Label::new("Search..."));
+        if self.logged_in {
+            widget::bar(
+                ctx,
+                &mut self.widget_menu,
+                &mut self.widget_clock,
+                &mut self.window_settings,
+                &mut self.bar_width,
+                &mut self.bar_x,
+                &mut self.bar_y,
+            );
 
-                let clock: f64 = chrono::Local::now().time().num_seconds_from_midnight() as f64;
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    if ui
-                        .button(format!(
-                            "{:02}:{:02}",
-                            (clock % (24.0 * 60.0 * 60.0) / 3600.0).floor(),
-                            (clock % (60.0 * 60.0) / 60.0).floor(),
-                        ))
-                        .clicked()
-                    {
-                        if self.widget_clock {
-                            self.widget_clock = false;
-                        } else {
-                            self.widget_clock = true;
-                        }
-                    };
-
-                    //ui.add(super::toggle_switch::toggle(&mut self.widget_clock));
+            egui::Area::new("wallpaper")
+                .order(egui::Order::Background)
+                .show(ctx, |ui| {
+                    // The central panel the region left after adding TopPanel's and SidePanel's
+                    ui.add(egui::Image::new(
+                        self.wallpaper.texture_id(ctx),
+                        ctx.screen_rect().size(),
+                    ));
                 });
-            });
-        });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            // The central panel the region left after adding TopPanel's and SidePanel's
-            ui.add(egui::Image::new(
-                self.wallpaper.texture_id(ctx),
-                [ui.available_width(), ui.available_height()],
-            ));
-        });
+            // We need better widget system, look at widget.rs
+            widget::clock(
+                ctx,
+                &mut self.widget_clock,
+                &mut self.logged_in,
+                self.nickname.to_owned(),
+                &mut self.bar_width,
+                &mut self.bar_x,
+                &mut self.bar_y,
+            );
+            widget::menu_start(
+                ctx,
+                &mut self.widget_menu,
+                &mut self.window_about,
+                &mut self.window_settings,
+                &mut self.window_textedit,
+                &mut self.bar_x,
+                &mut self.bar_y,
+            );
 
-        // We need better widget system, look at widget.rs
-        widget::clock(ctx, &mut self.widget_clock);
-        widget::menu_start(ctx, &mut self.widget_menu);
+            window::about(ctx, &mut self.window_about);
+            window::settings(
+                ctx,
+                &mut self.window_settings,
+                &mut self.bar_width,
+                &mut self.bar_x,
+                &mut self.bar_y,
+            );
+            window::text_editor(ctx, &mut self.window_textedit, &mut self.text);
 
-        window::about(ctx, &mut self.window_about);
-        window::settings(ctx, &mut self.window_settings);
+            self.notify.show(ctx);
+        } else {
+            egui::Area::new("wallpaper-login")
+                .order(egui::Order::Background)
+                .show(ctx, |ui| {
+                    ui.add(egui::Image::new(
+                        self.wallpaper_login.texture_id(ctx),
+                        ctx.screen_rect().size(),
+                    ));
+                });
 
-        self.notify.show(ctx);
+            egui::Window::new("login-form")
+                .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+                .title_bar(false)
+                .movable(false)
+                .resizable(false)
+                .show(ctx, |ui| {
+                    ui.vertical_centered(|ui| {
+                        let clock: f64 =
+                            chrono::Local::now().time().num_seconds_from_midnight() as f64;
+                        ui.label(
+                            egui::RichText::new(format!(
+                                "{:02}:{:02}",
+                                (clock % (24.0 * 60.0 * 60.0) / 3600.0).floor(),
+                                (clock % (60.0 * 60.0) / 60.0).floor(),
+                            ))
+                            .font(egui::FontId::proportional(32.0)),
+                        );
+                        ui.separator();
+                        ui.add(
+                            egui::TextEdit::singleline(&mut self.nickname).hint_text("Nickname"),
+                        );
+                        ui.separator();
+                        if ui.button("Log In!").clicked() {
+                            if self.nickname.is_empty() {
+                                self.logged_in = false;
+                                self.notify.info("Nickname can't be empty!");
+                            } else if self.nickname.len() == 1 || self.nickname.len() == 2 {
+                                self.logged_in = false;
+                                self.notify.info("Nickname must be at least 3 letter long!");
+                            } else if self.nickname.contains(" ") {
+                                self.logged_in = false;
+                                self.notify.info("Nickname can't have spaces!");
+                            } else {
+                                self.logged_in = true;
+                            }
+                        }
+                    });
+                });
+            self.notify.show(ctx);
+        }
     }
 }

@@ -31,12 +31,56 @@ pub fn about(ctx: &egui::Context, open: &mut bool) {
                 )
                 .font(egui::FontId::proportional(20.0)),
             );
+            ui.separator();
+            ui.hyperlink("https://egui.rs/");
+            ui.hyperlink("https://trunkrs.dev");
         });
     });
 }
 
-pub fn settings(ctx: &egui::Context, open: &mut bool) {
+pub fn settings(
+    ctx: &egui::Context,
+    open: &mut bool,
+    bar_width: &mut f32,
+    bar_x: &mut f32,
+    bar_y: &mut f32,
+) {
     egui::Window::new("Settings").open(open).show(ctx, |ui| {
-        ctx.style_ui(ui);
+        ui.collapsing("egui", |ui| {
+            ctx.style_ui(ui);
+        });
+        ui.collapsing("ZephyrOS", |ui| {
+            ui.label("bar width:");
+            ui.add(egui::Slider::new(
+                bar_width,
+                520.0..=ctx.screen_rect().size().x - 30.0,
+            ));
+            ui.label("bar x:");
+            ui.add(egui::Slider::new(
+                bar_x,
+                0.0..=ctx.screen_rect().size().x - *bar_width - 10.0,
+            ));
+            ui.label("bar y:");
+            ui.add(egui::Slider::new(
+                bar_y,
+                0.0..=-ctx.screen_rect().size().y + 70.0,
+            ));
+        });
+    });
+}
+
+pub fn text_editor(ctx: &egui::Context, open: &mut bool, text: &mut String) {
+    egui::Window::new("Text Editor").open(open).show(ctx, |ui| {
+        ui.horizontal(|ui| {
+            if ui.button("Save").clicked() {
+                // download text as .txt file or something
+                // std::fs::File doesnt work btw...
+            }
+        });
+        ui.add(
+            egui::TextEdit::multiline(text)
+                .desired_width(ctx.screen_rect().size().x / 3.)
+                .desired_rows(20),
+        );
     });
 }
