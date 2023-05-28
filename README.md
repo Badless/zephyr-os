@@ -13,7 +13,7 @@ If you have an issue and website is not loading or loads older version, go to Se
 <summary>(28.04.2023)</summary>
 <br>
 Project Started<br>
-[+] About Window<br>
+[+] About window<br>
 [+] Settings<br>
 [+] Wallpaper<br>
 [+] Taskbar<br>
@@ -25,6 +25,15 @@ Project Started<br>
 [+] Clock<br>
 [+] Widgets<br>
 [+] egui_modal crate for important notifications<br>
+</details>
+
+<details>
+<summary>(28.05.2023)</summary>
+<br>
+[+] Better bar<br>
+[+] Login screen<br>
+[+] Text editor<br>
+[+] Wallpaper is full screen now<br>
 </details>
 
 ## Have an idea for our os?
